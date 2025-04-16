@@ -5,7 +5,7 @@ const IrrigationLog = () => {
   const [entries, setEntries] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8001/irrigation-log')
+    axios.get('https://turf-irrigation-dev2-backend.onrender.com/irrigation-log')
       .then(response => setEntries(response.data))
       .catch(error => console.error('Error fetching irrigation log:', error));
   }, []);

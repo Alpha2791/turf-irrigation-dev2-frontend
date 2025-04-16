@@ -5,7 +5,7 @@ const MoistureLog = () => {
   const [entries, setEntries] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8001/moisture-log')
+    axios.get('https://turf-irrigation-dev2-backend.onrender.com/moisture-log')
       .then(response => setEntries(response.data))
       .catch(error => console.error('Error fetching moisture log:', error));
   }, []);

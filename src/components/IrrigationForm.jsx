@@ -9,7 +9,7 @@ const IrrigationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://127.0.0.1:8001/log-irrigation', {
+      await axios.post('https://turf-irrigation-dev2-backend.onrender.com/log-irrigation', {
         timestamp,
         irrigation_mm: parseFloat(irrigation),
       });

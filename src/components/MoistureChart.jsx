@@ -22,7 +22,7 @@ const MoistureChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:8001/predicted-moisture");
+        const res = await axios.get("https://turf-irrigation-dev2-backend.onrender.com/predicted-moisture");
         const processed = res.data.map(d => ({
           ...d,
           timestamp: d.timestamp.slice(0, 13),
@@ -37,7 +37,7 @@ const MoistureChart = () => {
 
     const fetchForecast = async () => {
       try {
-        const res = await axios.get(`http://127.0.0.1:8001/wilt-forecast?wilt_point=${wiltPoint}`);
+        const res = await axios.get(`https://turf-irrigation-dev2-backend.onrender.com/wilt-forecast?wilt_point=${wiltPoint}`);
         setForecast(res.data);
         console.log("Wilt forecast:", res.data);
       } catch (err) {
