@@ -58,7 +58,7 @@ const MoistureChart = () => {
   }, [upperLimit]);
 
   const wiltTimestamp = forecast?.wilt_point_hit?.slice(0, 13);
-  const irrigationTip = forecast?.recommended_irrigation_mm;
+  // const irrigationTip = forecast?.recommended_irrigation_mm; // Reserved for future use
 
   return (
     <div>
