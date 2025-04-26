@@ -37,7 +37,7 @@ const MoistureChart = () => {
 
     const fetchForecast = async () => {
       try {
-        const res = await axios.get(`https://turf-irrigation-dev2-backend.onrender.com/wilt-forecast?wilt_point=${wiltPoint}`);
+        const res = await axios.get(`https://turf-irrigation-dev2-backend.onrender.com/wilt-forecast?wilt_point=${wiltPoint}&upper_limit=${upperLimit}`);
         setForecast(res.data);
         console.log("Wilt forecast:", res.data);
       } catch (err) {
@@ -47,7 +47,7 @@ const MoistureChart = () => {
 
     fetchData();
     fetchForecast();
-  }, [wiltPoint]);
+  }, [wiltPoint, upperLimit]);
 
   useEffect(() => {
     localStorage.setItem("wiltPoint", wiltPoint);
@@ -58,7 +58,7 @@ const MoistureChart = () => {
   }, [upperLimit]);
 
   const wiltTimestamp = forecast?.wilt_point_hit?.slice(0, 13);
-  // const irrigationTip = forecast?.recommended_irrigation_mm; // Reserved for future use
+  const irrigationTip = forecast?.recommended_irrigation_mm;
 
   return (
     <div>
@@ -112,19 +112,18 @@ const MoistureChart = () => {
 
           <ReferenceLine y={wiltPoint} yAxisId="left" stroke="red" strokeDasharray="4 4" label="Wilt Point" />
 
-          {wiltTimestamp && (
-          	<ReferenceLine x={wiltTimestamp} stroke="orange" strokeDasharray="3 3" label="Wilt Forecast" />
-	  )}
-
- 	  {forecast?.recommended_irrigation_mm != null && (
-  	  	<ReferenceLine
-    		  y={forecast.recommended_irrigation_mm}
-    		  yAxisId="left"
-    		  stroke="blue"
-    		  strokeDasharray="3 3"
-    		  label={`Suggest: ${forecast.recommended_irrigation_mm} mm`}
-  	 />
-	)}
+          {wiltTimestamp && (() => {
+            const timestamps = data.map(d => d.timestamp);
+            const minTimestamp = Math.min(...timestamps.map(t => new Date(t).getTime()));
+            const maxTimestamp = Math.max(...timestamps.map(t => new Date(t).getTime()));
+            const wiltTime = new Date(wiltTimestamp).getTime();
+            if (wiltTime >= minTimestamp && wiltTime <= maxTimestamp) {
+              return (
+                <ReferenceLine x={wiltTimestamp} stroke="orange" strokeDasharray="3 3" label="Wilt Forecast" />
+              );
+            }
+            return null;
+          })()}
 
           <Line yAxisId="left" type="monotone" dataKey="predicted_moisture_mm" name="Moisture" stroke="#007acc" strokeWidth={2} dot={false} />
           <Bar yAxisId="left" dataKey="irrigation_mm" name="Irrigation" fill="#99ccff" barSize={10} />
