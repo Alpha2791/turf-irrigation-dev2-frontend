@@ -113,14 +113,25 @@ const MoistureChart = () => {
 
           <ReferenceLine y={wiltPoint} yAxisId="left" stroke="red" strokeDasharray="4 4" label="Wilt Point" />
 
-          {wiltTimestamp && (
-  <ReferenceLine
-    x={wiltTimestamp}
-    stroke="orange"
-    strokeDasharray="3 3"
-    label={irrigationTip ? `Tip: ${irrigationTip}mm` : "Wilt Forecast"}
-  />
-)}
+          {wiltTimestamp && (() => {
+  const timestamps = data.map(d => new Date(d.timestamp).getTime());
+  const minTimestamp = Math.min(...timestamps);
+  const maxTimestamp = Math.max(...timestamps);
+  const wiltTime = new Date(wiltTimestamp).getTime();
+
+  if (wiltTime >= minTimestamp && wiltTime <= maxTimestamp) {
+    return (
+      <ReferenceLine
+        x={wiltTimestamp}
+        stroke="orange"
+        strokeDasharray="3 3"
+        label={irrigationTip ? `Tip: ${irrigationTip}mm` : "Wilt Forecast"}
+      />
+    );
+  }
+  return null;
+})()}
+}
 
 
           <Line yAxisId="left" type="monotone" dataKey="predicted_moisture_mm" name="Moisture" stroke="#007acc" strokeWidth={2} dot={false} />
