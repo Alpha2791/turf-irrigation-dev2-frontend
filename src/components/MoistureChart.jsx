@@ -58,7 +58,8 @@ const MoistureChart = () => {
   }, [upperLimit]);
 
   const wiltTimestamp = forecast?.wilt_point_hit?.slice(0, 13);
-  const irrigationTip = forecast?.recommended_irrigation_mm;
+  const irrigationTip = forecast?.recommended_irrigation_mm || null;
+
 
   return (
     <div>
@@ -112,18 +113,15 @@ const MoistureChart = () => {
 
           <ReferenceLine y={wiltPoint} yAxisId="left" stroke="red" strokeDasharray="4 4" label="Wilt Point" />
 
-          {wiltTimestamp && (() => {
-            const timestamps = data.map(d => d.timestamp);
-            const minTimestamp = Math.min(...timestamps.map(t => new Date(t).getTime()));
-            const maxTimestamp = Math.max(...timestamps.map(t => new Date(t).getTime()));
-            const wiltTime = new Date(wiltTimestamp).getTime();
-            if (wiltTime >= minTimestamp && wiltTime <= maxTimestamp) {
-              return (
-                <ReferenceLine x={wiltTimestamp} stroke="orange" strokeDasharray="3 3" label="Wilt Forecast" />
-              );
-            }
-            return null;
-          })()}
+          {wiltTimestamp && (
+  <ReferenceLine
+    x={wiltTimestamp}
+    stroke="orange"
+    strokeDasharray="3 3"
+    label={irrigationTip ? `Tip: ${irrigationTip}mm` : "Wilt Forecast"}
+  />
+)}
+
 
           <Line yAxisId="left" type="monotone" dataKey="predicted_moisture_mm" name="Moisture" stroke="#007acc" strokeWidth={2} dot={false} />
           <Bar yAxisId="left" dataKey="irrigation_mm" name="Irrigation" fill="#99ccff" barSize={10} />
