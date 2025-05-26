@@ -19,35 +19,40 @@ const MoistureChart = () => {
 
   const [forecast, setForecast] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("https://turf-irrigation-dev2-backend.onrender.com/predicted-moisture");
-        const processed = res.data.map(d => ({
-          ...d,
-          timestamp: d.timestamp.slice(0, 13),
-        }));
-        setData(processed);
-        console.log("Preview chart data:");
-        console.table(processed.slice(0, 10));
-      } catch (err) {
-        console.error("Error fetching predicted moisture:", err);
-      }
-    };
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await axios.get("https://turf-irrigation-dev1-backend.onrender.com/predicted-moisture");
+      const processed = res.data.map(d => ({
+        ...d,
+        timestamp: d.timestamp.slice(0, 13),
+      }));
+      setData(processed);
+      console.log("Preview chart data:");
+      console.table(processed.slice(0, 10));
+    } catch (err) {
+      console.error("Error fetching predicted moisture:", err);
+    }
+  };
 
-    const fetchForecast = async () => {
-      try {
-        const res = await axios.get(`https://turf-irrigation-dev2-backend.onrender.com/wilt-forecast?wilt_point=${wiltPoint}&upper_limit=${upperLimit}`);
-        setForecast(res.data);
-        console.log("Wilt forecast:", res.data);
-      } catch (err) {
-        console.error("Error fetching wilt forecast:", err);
+  const fetchForecast = async (retry = false) => {
+    try {
+      const res = await axios.get(`https://turf-irrigation-dev1-backend.onrender.com/wilt-forecast?wilt_point=${wiltPoint}&upper_limit=${upperLimit}`);
+      setForecast(res.data);
+      console.log("Wilt forecast:", res.data);
+    } catch (err) {
+      if (!retry) {
+        console.warn("Wilt forecast failed, retrying in 1.5s...");
+        setTimeout(() => fetchForecast(true), 1500);
+      } else {
+        console.error("Wilt forecast failed after retry:", err);
       }
-    };
+    }
+  };
 
-    fetchData();
-    fetchForecast();
-  }, [wiltPoint, upperLimit]);
+  fetchData();
+  fetchForecast();
+}, [wiltPoint, upperLimit]);
 
   useEffect(() => {
     localStorage.setItem("wiltPoint", wiltPoint);
