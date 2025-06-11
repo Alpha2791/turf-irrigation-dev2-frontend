@@ -42,8 +42,8 @@ useEffect(() => {
       console.log("Wilt forecast:", res.data);
     } catch (err) {
       if (!retry) {
-        console.warn("Wilt forecast failed, retrying in 1.5s...");
-        setTimeout(() => fetchForecast(true), 1500);
+        console.warn("Wilt forecast failed, retrying in 3s...");
+        setTimeout(() => fetchForecast(true), 3000);
       } else {
         console.error("Wilt forecast failed after retry:", err);
       }
