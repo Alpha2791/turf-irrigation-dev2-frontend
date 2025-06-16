@@ -9,7 +9,7 @@ const MoistureForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('https://turf-irrigation-dev2-backend.onrender.com/log-moisture', {
+    await axios.post('https://turf-irrigation-dev4-backend.onrender.com/log-moisture', {
       timestamp,
       moisture_mm: parseFloat(form.moisture_mm)
     });
